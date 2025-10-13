@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Peluquería Canina</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body>
+    <!-- ================================================== -->
+    <!-- ENCABEZADO PRINCIPAL -->
+    <!-- ================================================== -->
+    <header id="encabezado-principal">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- Logo de la peluquería -->
+                <a class="navbar-brand fw-bold text-primary" href="index.html">
+                    <img src="assets/img/logo.png" alt="Logo Peluquería Canina" height="10" width="70">
+                </a>
+                
+                <!-- Botón hamburguesa para dispositivos móviles -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navegacion-principal" aria-controls="navegacion-principal" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Enlaces de navegación -->
+                <div class="collapse navbar-collapse" id="navegacion-principal">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="servicios.html">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="contacto.html">Contacto</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Enlaces de usuario y carrito -->
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
+                        <a href="registro.html" class="btn btn-primary me-3">Registrarse</a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-cart"></i> Carrito (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================================================== -->
+    <!-- CONTENIDO PRINCIPAL - PÁGINA DE CONTACTO -->
+    <!-- ================================================== -->
+    <main>
+        <div class="container py-5">
+            <!-- Título de la página -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold">Contáctanos</h1>
+                <p class="lead text-muted">Estamos aquí para ayudarte con cualquier consulta sobre nuestros servicios</p>
+            </div>
+
+            <div class="row">
+                <!-- Formulario de contacto -->
+                <div class="col-lg-8 mb-5">
+                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <h3 class="card-title mb-4">Envíanos un Mensaje</h3>
+                            
+                            <form id="formulario-contacto" novalidate>
+                                <!-- Campo: Nombre -->
+                                <div class="mb-3">
+                                    <label for="nombre-contacto" class="form-label">Nombre Completo *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="nombre-contacto" 
+                                           name="nombre-contacto" 
+                                           placeholder="Ingresa tu nombre completo">
+                                    <div class="invalid-feedback">
+                                        El nombre es obligatorio.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Correo -->
+                                <div class="mb-3">
+                                    <label for="email-contacto" class="form-label">Correo Electrónico *</label>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="email-contacto" 
+                                           name="email-contacto" 
+                                           placeholder="correo@ejemplo.com">
+                                    <div class="invalid-feedback">
+                                        El correo electrónico es obligatorio.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Teléfono -->
+                                <div class="mb-3">
+                                    <label for="telefono-contacto" class="form-label">Teléfono</label>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="telefono-contacto" 
+                                           name="telefono-contacto" 
+                                           placeholder="+56 9 1234 5678">
+                                </div>
+
+                                <!-- Campo: Asunto -->
+                                <div class="mb-3">
+                                    <label for="asunto-contacto" class="form-label">Asunto</label>
+                                    <select class="form-select" id="asunto-contacto" name="asunto-contacto">
+                                        <option value="">Selecciona un asunto</option>
+                                        <option value="consulta-general">Consulta General</option>
+                                        <option value="reserva-cita">Reservar Cita</option>
+                                        <option value="informacion-servicios">Información sobre Servicios</option>
+                                        <option value="reclamo">Reclamo o Sugerencia</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                </div>
+
+                                <!-- Campo: Mensaje -->
+                                <div class="mb-4">
+                                    <label for="mensaje-contacto" class="form-label">Mensaje *</label>
+                                    <textarea class="form-control" 
+                                              id="mensaje-contacto" 
+                                              name="mensaje-contacto" 
+                                              rows="5" 
+                                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                                    <div class="invalid-feedback">
+                                        El mensaje es obligatorio.
+                                    </div>
+                                </div>
+
+                                <!-- Botón de envío -->
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-envelope me-2"></i>Enviar Mensaje
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de contacto -->
+                <div class="col-lg-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">Información de Contacto</h4>
+                            
+                            <!-- Dirección -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-geo-alt-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Dirección</h6>
+                                    <p class="text-muted mb-0">Av. Libertador 1234<br>Santiago, Chile</p>
+                                </div>
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-telephone-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Teléfono</h6>
+                                    <p class="text-muted mb-0">+56 2 2345 6789</p>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-whatsapp text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">WhatsApp</h6>
+                                    <p class="text-muted mb-0">+56 9 8765 4321</p>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-envelope-fill text-primary fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Email</h6>
+                                    <p class="text-muted mb-0">contacto@pelupet.cl</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horarios de atención -->
+                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">Horarios de Atención</h4>
+                            
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Lunes - Viernes</h6>
+                                    <p class="text-muted">9:00 - 19:00</p>
+                                </div>
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Sábado</h6>
+                                    <p class="text-muted">9:00 - 17:00</p>
+                                </div>
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Domingo</h6>
+                                    <p class="text-muted">10:00 - 15:00</p>
+                                </div>
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Festivos</h6>
+                                    <p class="text-muted">Cerrado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================================================== -->
+    <!-- PIE DE PÁGINA -->
+    <!-- ================================================== -->
+    <footer id="pie-pagina" class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 text-muted">&copy; 2025 PeluPet. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript personalizado -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

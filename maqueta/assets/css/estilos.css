@@ -1,0 +1,88 @@
+/* ================================================== */
+/* HOJA DE ESTILOS PERSONALIZADOS - PELUQUERÍA CANINA */
+/* ================================================== */
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos para el pie de página */
+#pie-pagina {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #dee2e6;
+    margin-top: auto;
+}
+
+/* Asegurar que el footer esté al final de la página */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+#pie-pagina {
+    flex-shrink: 0;
+}
+
+/* Estilos para cards con borde de color en el admin */
+.border-left-primary {
+    border-left: 0.25rem solid #007bff !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #28a745 !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #17a2b8 !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #ffc107 !important;
+}
+
+/* Mejoras visuales para las cards */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Estilos para los botones */
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+/* Mejoras para la navbar */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* Estilos para formularios */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Estilos para la sección hero */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+}
+
+/* Responsive para imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+}

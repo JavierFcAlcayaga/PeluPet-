@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Peluquería Canina</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================== -->
+    <!-- ENCABEZADO PRINCIPAL -->
+    <!-- ================================================== -->
+    <header id="encabezado-principal">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- Logo de la peluquería -->
+                <a class="navbar-brand fw-bold text-primary" href="index.html">
+                    <img src="assets/img/logo.png" alt="Logo Peluquería Canina" height="10" width="70">
+                </a>
+                
+                <!-- Botón hamburguesa para dispositivos móviles -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navegacion-principal" aria-controls="navegacion-principal" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Enlaces de navegación -->
+                <div class="collapse navbar-collapse" id="navegacion-principal">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="servicios.html">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacto.html">Contacto</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Enlaces de usuario y carrito -->
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
+                        <a href="registro.html" class="btn btn-primary me-3">Registrarse</a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-cart"></i> Carrito (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================================================== -->
+    <!-- CONTENIDO PRINCIPAL - BLOG -->
+    <!-- ================================================== -->
+    <main>
+        <div class="container py-5">
+            <!-- Título de la página -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold">Blog PeluPet</h1>
+                <p class="lead text-muted">Consejos, tips y novedades sobre el cuidado de tu mascota</p>
+            </div>
+
+            <div class="row">
+                <!-- Contenido principal del blog -->
+                <div class="col-lg-8">
+                    <!-- Artículo destacado -->
+                    <article class="card shadow mb-5">
+                        <img src="assets/img/Perrito full.jpeg" 
+                             class="card-img-top." 
+                             alt="Cuidado del pelaje canino">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-primary">Cuidado</span>
+                                <small class="text-muted">15 de Enero, 2025</small>
+                            </div>
+                            <h2 class="card-title h4">Cómo Mantener el Pelaje de tu Perro Saludable</h2>
+                            <p class="card-text">
+                                El cuidado regular del pelaje es esencial para la salud y bienestar de tu mascota. En este artículo te compartimos los mejores consejos para mantener el pelo de tu perro brillante y saludable durante todo el año.
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">Por: Equipo PeluPet | 5 min de lectura</small>
+                            </p>
+                            <a href="#" class="btn btn-primary">Leer Más</a>
+                        </div>
+                    </article>
+
+                    <!-- Grid de artículos -->
+                    <div class="row">
+                        <!-- Artículo 1 -->
+                        <div class="col-md-6 mb-4">
+                            <article class="card h-100 shadow-sm">
+                                <img src="assets/img/Garras.jpeg" 
+                                     class="card-img-top" 
+                                     alt="Corte de uñas">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-success">Tips</span>
+                                        <small class="text-muted">10 Ene</small>
+                                    </div>
+                                    <h5 class="card-title">La Importancia del Corte de Uñas</h5>
+                                    <p class="card-text flex-grow-1">
+                                        Aprende por qué es crucial mantener las uñas de tu perro bien cortadas y cómo hacerlo de forma segura.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Leer Artículo</a>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- Artículo 2 -->
+                        <div class="col-md-6 mb-4">
+                            <article class="card h-100 shadow-sm">
+                                <img src="assets/img/CorteBanio.jpeg" 
+                                     class="card-img-top" 
+                                     alt="Baño de perros">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-info">Guía</span>
+                                        <small class="text-muted">8 Ene</small>
+                                    </div>
+                                    <h5 class="card-title">¿Con Qué Frecuencia Bañar a tu Perro?</h5>
+                                    <p class="card-text flex-grow-1">
+                                        Descubre la frecuencia ideal de baño según el tipo de pelo y actividad de tu mascota.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Leer Artículo</a>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- Artículo 3 -->
+                        <div class="col-md-6 mb-4">
+                            <article class="card h-100 shadow-sm">
+                                <img src="assets/img/Punk.jpeg" 
+                                     class="card-img-top" 
+                                     alt="Perro con corte estético">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-warning">Tendencias</span>
+                                        <small class="text-muted">5 Ene</small>
+                                    </div>
+                                    <h5 class="card-title">Cortes de Moda para Perros 2025</h5>
+                                    <p class="card-text flex-grow-1">
+                                        Conoce las últimas tendencias en cortes estéticos que harán lucir a tu perro espectacular.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Leer Artículo</a>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- Artículo 4 -->
+                        <div class="col-md-6 mb-4">
+                            <article class="card h-100 shadow-sm">
+                                <img src="assets/img/AbrazoPerrito.jpeg" 
+                                     class="card-img-top" 
+                                     alt="Perro feliz después del grooming">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-secondary">Salud</span>
+                                        <small class="text-muted">3 Ene</small>
+                                    </div>
+                                    <h5 class="card-title">Señales de Problemas en la Piel</h5>
+                                    <p class="card-text flex-grow-1">
+                                        Identifica temprano los problemas dermatológicos más comunes en perros y cuándo consultar al veterinario.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Leer Artículo</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- Paginación -->
+                    <nav aria-label="Navegación del blog">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Categorías -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Categorías</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="d-block text-decoration-none mb-2">
+                                <i class="bi bi-tag me-2"></i>Cuidado y Higiene <span class="badge bg-light text-dark ms-2">12</span>
+                            </a>
+                            <a href="#" class="d-block text-decoration-none mb-2">
+                                <i class="bi bi-tag me-2"></i>Tips de Grooming <span class="badge bg-light text-dark ms-2">8</span>
+                            </a>
+                            <a href="#" class="d-block text-decoration-none mb-2">
+                                <i class="bi bi-tag me-2"></i>Salud Canina <span class="badge bg-light text-dark ms-2">6</span>
+                            </a>
+                            <a href="#" class="d-block text-decoration-none mb-2">
+                                <i class="bi bi-tag me-2"></i>Tendencias <span class="badge bg-light text-dark ms-2">4</span>
+                            </a>
+                            <a href="#" class="d-block text-decoration-none">
+                                <i class="bi bi-tag me-2"></i>Productos <span class="badge bg-light text-dark ms-2">3</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Artículos populares -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Artículos Populares</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <img src="assets/img/Abrazo.jpeg" 
+                                     alt="Artículo popular" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 45px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="#" class="text-decoration-none">Cómo Calmar a un Perro Nervioso</a></h6>
+                                    <small class="text-muted">28 Dic 2024</small>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <img src="assets/img/Productos.jpeg" 
+                                     alt="Artículo popular" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 45px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="#" class="text-decoration-none">Productos Naturales vs Químicos</a></h6>
+                                    <small class="text-muted">25 Dic 2024</small>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <img src="assets/img/Grooming.jpeg" 
+                                     alt="Artículo popular" 
+                                     class="rounded me-3" 
+                                     style="width: 60px; height: 45px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="#" class="text-decoration-none">Preparar a tu Perro para el Grooming</a></h6>
+                                    <small class="text-muted">22 Dic 2024</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="card shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">¡Suscríbete!</h5>
+                            <p class="card-text small">Recibe consejos y tips directamente en tu email.</p>
+                            <form>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="tu@email.com">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm w-100">Suscribirse</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================================================== -->
+    <!-- PIE DE PÁGINA -->
+    <!-- ================================================== -->
+    <footer id="pie-pagina" class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 text-muted">&copy; 2025 PeluPet. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript personalizado -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

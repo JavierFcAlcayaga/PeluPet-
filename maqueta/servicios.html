@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Peluquería Canina</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================== -->
+    <!-- ENCABEZADO PRINCIPAL -->
+    <!-- ================================================== -->
+    <header id="encabezado-principal">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- Logo de la peluquería -->
+                <a class="navbar-brand fw-bold text-primary" href="index.html">
+                    <img src="assets/img/logo.png" alt="Logo Peluquería Canina" height="10" width="70">
+                </a>
+                
+                <!-- Botón hamburguesa para dispositivos móviles -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navegacion-principal" aria-controls="navegacion-principal" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Enlaces de navegación -->
+                <div class="collapse navbar-collapse" id="navegacion-principal">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="servicios.html">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacto.html">Contacto</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Enlaces de usuario y carrito -->
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
+                        <a href="registro.html" class="btn btn-primary me-3">Registrarse</a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-cart"></i> Carrito (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================================================== -->
+    <!-- CONTENIDO PRINCIPAL - LISTADO DE SERVICIOS -->
+    <!-- ================================================== -->
+    <main>
+        <div class="container py-5">
+            <!-- Título de la página -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold">Todos Nuestros Servicios</h1>
+                <p class="lead text-muted">Descubre la gama completa de servicios profesionales para el cuidado de tu mascota</p>
+            </div>
+
+            <!-- Grilla de servicios -->
+            <div class="row">
+                <!-- Servicio 1: Corte y Baño Completo -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/cortebanio.jpeg" 
+                             class="card-img-top" 
+                             alt="Corte y Baño Completo">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Corte y Baño Completo</h5>
+                            <p class="card-text flex-grow-1">Servicio integral que incluye baño, secado, corte de pelo y limpieza de oídos.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$25.000</p>
+                            <a href="detalle-servicio.html" class="btn btn-primary">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 2: Corte de Uñas -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Garras.jpeg" 
+                             class="card-img-top" 
+                             alt="Corte de Uñas">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Corte de Uñas</h5>
+                            <p class="card-text flex-grow-1">Servicio profesional de corte de uñas para mantener la salud de las patas.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$8.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 3: Spa Relajante -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Spa.jpeg" 
+                             class="card-img-top" 
+                             alt="Spa Relajante">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Spa Relajante</h5>
+                            <p class="card-text flex-grow-1">Tratamiento premium con masajes, aromaterapia e hidratación del pelaje.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$45.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 4: Limpieza Dental -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Limpieza dental.jpeg" 
+                             class="card-img-top" 
+                             alt="Limpieza Dental">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Limpieza Dental</h5>
+                            <p class="card-text flex-grow-1">Limpieza profesional de dientes para mantener la salud bucal de tu mascota.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$15.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 5: Desenredado -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Enrredado.jpeg" 
+                             class="card-img-top" 
+                             alt="Desenredado">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Desenredado Especial</h5>
+                            <p class="card-text flex-grow-1">Tratamiento especializado para perros con pelo enredado o muy largo.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$20.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 6: Tratamiento Antipulgas -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Antipulgas.jpeg" 
+                             class="card-img-top" 
+                             alt="Tratamiento Antipulgas">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Tratamiento Antipulgas</h5>
+                            <p class="card-text flex-grow-1">Tratamiento completo para eliminar y prevenir pulgas y otros parásitos.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$18.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 7: Corte Estético -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/img/Punk.jpeg" 
+                             class="card-img-top" 
+                             alt="Corte Estético">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Corte Estético</h5>
+                            <p class="card-text flex-grow-1">Corte personalizado según la raza y preferencias del dueño.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$30.000</p>
+                            <button type="button" class="btn btn-primary">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 8: Paquete Completo -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm border-warning">
+                        <div class="card-header bg-warning text-white text-center">
+                            <small class="fw-bold">¡OFERTA ESPECIAL!</small>
+                        </div>
+                        <img src="assets/img/Perrito full.jpeg" 
+                             class="card-img-top rounded-0" 
+                             alt="Paquete Completo">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Paquete Completo</h5>
+                            <p class="card-text flex-grow-1">Todos nuestros servicios incluidos: baño, corte, uñas, limpieza dental y más.</p>
+                            <p class="fw-bold text-primary fs-5 mb-3">$65.000 <span class="text-muted text-decoration-line-through fs-6">$85.000</span></p>
+                            <button type="button" class="btn btn-warning text-white">Ver Detalle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================================================== -->
+    <!-- PIE DE PÁGINA -->
+    <!-- ================================================== -->
+    <footer id="pie-pagina" class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 text-muted">&copy; 2025 PeluPet. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript personalizado -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Peluquería Canina</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body>
+    <!-- ================================================== -->
+    <!-- ENCABEZADO PRINCIPAL -->
+    <!-- ================================================== -->
+    <header id="encabezado-principal">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- Logo de la peluquería -->
+                <a class="navbar-brand fw-bold text-primary" href="index.html">
+                    <img src="assets/img/logo.png" alt="Logo Peluquería Canina" height="10" width="70">
+                </a>
+                
+                <!-- Botón hamburguesa para dispositivos móviles -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navegacion-principal" aria-controls="navegacion-principal" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Enlaces de navegación -->
+                <div class="collapse navbar-collapse" id="navegacion-principal">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="servicios.html">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacto.html">Contacto</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Enlaces de usuario y carrito -->
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
+                        <a href="registro.html" class="btn btn-primary me-3">Registrarse</a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-cart"></i> Carrito (0)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ================================================== -->
+    <!-- CONTENIDO PRINCIPAL - FORMULARIO DE REGISTRO -->
+    <!-- ================================================== -->
+    <main>
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow">
+                        <div class="card-body p-5">
+                            <!-- Título del formulario -->
+                            <div class="text-center mb-4">
+                                <h1 class="h3 fw-bold">Crear Cuenta</h1>
+                                <p class="text-muted">Únete a nuestra comunidad y disfruta de los mejores servicios para tu mascota</p>
+                            </div>
+
+                            <!-- Formulario de registro -->
+                            <form id="formulario-registro" novalidate>
+                                <!-- Campo: Nombre Completo -->
+                                <div class="mb-3">
+                                    <label for="nombre-completo" class="form-label">Nombre Completo *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="nombre-completo" 
+                                           name="nombre-completo" 
+                                           placeholder="Ingresa tu nombre completo">
+                                    <div class="invalid-feedback">
+                                        El nombre es obligatorio.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Correo Electrónico -->
+                                <div class="mb-3">
+                                    <label for="email-registro" class="form-label">Correo Electrónico *</label>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="email-registro" 
+                                           name="email-registro" 
+                                           placeholder="correo@ejemplo.com">
+                                    <div class="invalid-feedback">
+                                        El correo electrónico es obligatorio.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Contraseña -->
+                                <div class="mb-3">
+                                    <label for="password-registro" class="form-label">Contraseña *</label>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password-registro" 
+                                           name="password-registro" 
+                                           placeholder="Mínimo 6 caracteres">
+                                    <div class="invalid-feedback">
+                                        La contraseña es obligatoria.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Confirmar Contraseña -->
+                                <div class="mb-3">
+                                    <label for="confirmar-password" class="form-label">Confirmar Contraseña *</label>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="confirmar-password" 
+                                           name="confirmar-password" 
+                                           placeholder="Repite tu contraseña">
+                                    <div class="invalid-feedback">
+                                        Debes confirmar tu contraseña.
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Teléfono (Opcional) -->
+                                <div class="mb-4">
+                                    <label for="telefono-registro" class="form-label">Teléfono</label>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="telefono-registro" 
+                                           name="telefono-registro" 
+                                           placeholder="+56 9 1234 5678">
+                                    <div class="form-text text-muted">
+                                        <small>Campo opcional. Nos ayuda a contactarte en caso de emergencia.</small>
+                                    </div>
+                                </div>
+
+                                <!-- Botón de envío -->
+                                <button type="submit" class="btn btn-primary w-100 mb-3">
+                                    <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                                </button>
+
+                                <!-- Enlace para iniciar sesión -->
+                                <div class="text-center">
+                                    <span class="text-muted">¿Ya tienes una cuenta? </span>
+                                    <a href="login.html" class="text-decoration-none">Inicia sesión aquí</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================================================== -->
+    <!-- PIE DE PÁGINA -->
+    <!-- ================================================== -->
+    <footer id="pie-pagina" class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 text-muted">&copy; 2025 PeluPet. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript personalizado -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
