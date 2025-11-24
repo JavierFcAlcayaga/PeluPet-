@@ -1,0 +1,9 @@
+services:
+  - type: static_site
+    name: pelupet
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    redirects:
+      - source: /(.*)
+        destination: /index.html
+        status: 200
