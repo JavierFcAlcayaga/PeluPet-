@@ -116,44 +116,52 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
-              <li className="nav-item">
-            <Link
-              className={`nav-link ${isActive('/reservas') ? 'active' : ''}`}
-              to="/reservas"
-              aria-current={isActive('/reservas') ? 'page' : undefined}
-            >
-              Reservar
-            </Link>
-              </li>
-              <li className="nav-item">
-                <Link 
-                  className={`nav-link ${isActive('/mis-reservas') ? 'active' : ''}`} 
-                  to="/mis-reservas"
-                  aria-current={isActive('/mis-reservas') ? 'page' : undefined}
-                >
-                  Mis Reservas
-                </Link>
-              </li>
-              {user?.role?.toLowerCase() === 'admin' && (
+              {user && (
                 <li className="nav-item">
                   <Link 
-                    className={`nav-link ${isActive('/admin/servicios') ? 'active' : ''}`} 
-                    to="/admin/servicios"
-                    aria-current={isActive('/admin/servicios') ? 'page' : undefined}
+                    className={`nav-link ${isActive('/reservas') ? 'active' : ''}`} 
+                    to="/reservas"
+                    aria-current={isActive('/reservas') ? 'page' : undefined}
                   >
-                    Admin
+                    Reservar
                   </Link>
                 </li>
               )}
-              <li className="nav-item">
-                <Link 
-                  className={`nav-link ${isActive('/perfil') ? 'active' : ''}`} 
-                  to="/perfil"
-                  aria-current={isActive('/perfil') ? 'page' : undefined}
-                >
-                  Perfil
-                </Link>
-              </li>
+              {user?.role?.toLowerCase() === 'admin' && (
+                <>
+                  <li className="nav-item">
+                    <Link 
+                      className={`nav-link ${isActive('/admin') ? 'active' : ''}`} 
+                      to="/admin"
+                      aria-current={isActive('/admin') ? 'page' : undefined}
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                </>
+              )}
+              {user && (
+                <li className="nav-item">
+                  <Link 
+                    className={`nav-link ${isActive('/perfil') ? 'active' : ''}`} 
+                    to="/perfil"
+                    aria-current={isActive('/perfil') ? 'page' : undefined}
+                  >
+                    Perfil
+                  </Link>
+                </li>
+              )}
+              {user && (
+                <li className="nav-item">
+                  <Link 
+                    className={`nav-link ${isActive('/mis-reservas') ? 'active' : ''}`} 
+                    to="/mis-reservas"
+                    aria-current={isActive('/mis-reservas') ? 'page' : undefined}
+                  >
+                    Mis Reservas
+                  </Link>
+                </li>
+              )}
             </ul>
             
             {/* Enlaces de usuario */}

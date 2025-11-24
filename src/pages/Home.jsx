@@ -8,27 +8,62 @@ const Home = () => {
   const [usingExamplePopular, setUsingExamplePopular] = useState(false);
   const [errorPopular, setErrorPopular] = useState('');
 
+  // Carrusel automático del hero en Inicio
+  // Solo imágenes 1, 2 y 4
+  const heroImages = [
+    '/img/Abrazo.jpeg', // 1
+    '/img/AbrazoPerrito.jpeg', // 2
+    '/img/Spa.jpeg', // 4
+  ];
+  const heroImageAlt = 'Perro feliz y bien cuidado';
+  const [heroIdx, setHeroIdx] = useState(0);
+  const [heroOpacity, setHeroOpacity] = useState(1);
+
+  const advanceHero = (nextIndex = null) => {
+    // Desvanecer (fade-out), cambiar imagen y desvanecer (fade-in)
+    setHeroOpacity(0);
+    setTimeout(() => {
+      if (nextIndex === null) {
+        setHeroIdx((i) => (i + 1) % heroImages.length);
+      } else {
+        setHeroIdx(() => nextIndex % heroImages.length);
+      }
+      // pequeña espera para asegurar cambio de src antes del fade-in
+      setTimeout(() => setHeroOpacity(1), 50);
+    }, 200);
+  };
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      advanceHero();
+    }, 4500); // cambia cada 4.5s
+    return () => clearInterval(id);
+  }, []);
+
   const examplePopular = [
     {
       id: 'ex-1',
       name: 'Corte y Baño Completo',
       description: 'Servicio completo que incluye baño, secado y corte de pelo.',
       price: 25000,
-      image: '/img/CorteBanio.jpeg'
+      image: '/img/CorteBanio.jpeg',
+      images: ['/img/CorteBanio.jpeg']
     },
     {
       id: 'ex-2',
       name: 'Corte de Uñas',
       description: 'Corte profesional de uñas para máximo confort.',
       price: 8000,
-      image: '/img/Garras.jpeg'
+      image: '/img/Garras.jpeg',
+      images: ['/img/Garras.jpeg']
     },
     {
       id: 'ex-3',
       name: 'Spa Relajante',
       description: 'Masajes, aromaterapia e hidratación del pelaje.',
       price: 35000,
-      image: '/img/Spa.jpeg'
+      image: '/img/Spa.jpeg',
+      images: ['/img/Spa.jpeg']
     },
   ];
 
@@ -51,6 +86,29 @@ const Home = () => {
     return '/img/CorteBanio.jpeg';
   };
 
+  // Helpers para carrusel en tarjetas populares
+  const [cardIdxMap, setCardIdxMap] = useState({});
+  const getServiceImages = (s) => {
+    let raw = [];
+    if (Array.isArray(s?.images) && s.images.length > 0) {
+      raw = s.images;
+    } else if (typeof s?.images === 'string' && s.images.trim()) {
+      try {
+        const parsed = JSON.parse(s.images);
+        if (Array.isArray(parsed) && parsed.length > 0) raw = parsed;
+      } catch {
+        // si es una URL simple en string
+        raw = s.image ? [s.image] : [s.images];
+      }
+    } else if (s?.image) {
+      raw = [s.image];
+    }
+    return raw.map((img) => buildImageSrc(img));
+  };
+  const getCardIdx = (id) => (cardIdxMap[id] ?? 0);
+  const goPrevCard = (id, len) => setCardIdxMap((m) => ({ ...m, [id]: ((getCardIdx(id) - 1 + len) % len) }));
+  const goNextCard = (id, len) => setCardIdxMap((m) => ({ ...m, [id]: ((getCardIdx(id) + 1) % len) }));
+
   const formatPrice = (price) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 }).format(price);
   const truncateText = (text, max = 90) => {
     if (!text) return '';
@@ -71,6 +129,8 @@ const Home = () => {
               description: item.description ?? item.detail ?? 'Sin descripción',
               price: item.price ?? 0,
               image: item.image ?? null,
+              // Conservar 'images' aunque llegue como string JSON o URL; se parsea más adelante
+              images: item.images ?? (item.image ? [item.image] : [])
             }))
           : [];
         if (normalized.length === 0) {
@@ -113,11 +173,28 @@ const Home = () => {
               </Link>
             </div>
             <div className="col-lg-6">
-              <img 
-                src="/img/Abrazo.jpeg" 
-                alt="Perro feliz y bien cuidado" 
-                className="img-fluid rounded shadow mt-3 mt-lg-0"
-              />
+              {/* Carrusel automático del hero con fade */}
+              <div className="position-relative rounded shadow overflow-hidden">
+                <img
+                  src={heroImages[heroIdx]}
+                  alt={heroImageAlt}
+                  className="img-fluid w-100"
+                  style={{ objectFit: 'cover', maxHeight: '360px', transition: 'opacity 600ms ease', opacity: heroOpacity }}
+                />
+                {/* Indicadores */}
+                <div className="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-2">
+                  {heroImages.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`btn ${i === heroIdx ? 'btn-light' : 'btn-outline-light'} btn-sm p-0`}
+                      style={{ width: '8px', height: '8px', borderRadius: '50%', opacity: 0.9 }}
+                      onClick={() => advanceHero(i)}
+                      aria-label={`Ir a imagen ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -149,11 +226,55 @@ const Home = () => {
               {popularServices.map((service) => (
                 <div key={service.id} className="col-md-4 mb-4">
                   <div className="card h-100 shadow-sm">
-                    <img 
-                      src={buildImageSrc(service.image)}
-                      className="card-img-top" 
-                      alt={service.name}
-                    />
+                    {(() => {
+                      const imgs = getServiceImages(service);
+                      const idx = getCardIdx(service.id);
+                      const current = imgs.length ? imgs[idx] : buildImageSrc(service.image);
+                      return (
+                        <div className="position-relative">
+                          <img
+                            src={current}
+                            className="card-img-top"
+                            alt={service.name}
+                            style={{ objectFit: 'cover', height: '220px' }}
+                          />
+                          {imgs.length > 1 && (
+                            <>
+                              <button
+                                type="button"
+                                className="btn btn-light position-absolute top-50 start-0 translate-middle-y"
+                                style={{ opacity: 0.9 }}
+                                onClick={() => goPrevCard(service.id, imgs.length)}
+                                aria-label="Imagen anterior"
+                              >
+                                <i className="bi bi-chevron-left"></i>
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-light position-absolute top-50 end-0 translate-middle-y"
+                                style={{ opacity: 0.9 }}
+                                onClick={() => goNextCard(service.id, imgs.length)}
+                                aria-label="Imagen siguiente"
+                              >
+                                <i className="bi bi-chevron-right"></i>
+                              </button>
+                              <div className="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-2">
+                                {imgs.map((_, i) => (
+                                  <button
+                                    key={i}
+                                    type="button"
+                                    className={`btn ${i === idx ? 'btn-primary' : 'btn-outline-light'} btn-sm p-0`}
+                                    style={{ width: '8px', height: '8px', borderRadius: '50%' }}
+                                    onClick={() => setCardIdxMap((m) => ({ ...m, [service.id]: i }))}
+                                    aria-label={`Ir a imagen ${i + 1}`}
+                                  />
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })()}
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{service.name}</h5>
                       <p className="card-text flex-grow-1">{truncateText(service.description, 90)}</p>
@@ -259,11 +380,11 @@ const Home = () => {
               <div className="card h-100 border-0 shadow-sm">
                 <div className="card-body text-center">
                   <div className="mb-3">
-                    <i className="bi bi-star-fill text-warning"></i>
-                    <i className="bi bi-star-fill text-warning"></i>
-                    <i className="bi bi-star-fill text-warning"></i>
-                    <i className="bi bi-star-fill text-warning"></i>
-                    <i className="bi bi-star-fill text-warning"></i>
+                    <i className="bi bi-star-fill text_warning"></i>
+                    <i className="bi bi-star-fill text_warning"></i>
+                    <i className="bi bi-star-fill text_warning"></i>
+                    <i className="bi bi-star-fill text_warning"></i>
+                    <i className="bi bi-star-fill text_warning"></i>
                   </div>
                   <p className="card-text">
                     "La mejor peluquería canina de la ciudad. Mi French Poodle Luna ama venir aquí. 

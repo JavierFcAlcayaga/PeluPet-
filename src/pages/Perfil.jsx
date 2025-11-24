@@ -8,6 +8,12 @@ const Perfil = () => {
   const [error, setError] = useState(null);
   const [errorDetails, setErrorDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
+  // NUEVO: estado de edición
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', phone: '' });
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [saveSuccess, setSaveSuccess] = useState('');
 
   useEffect(() => {
     fetchUserData();
@@ -17,8 +23,33 @@ const Perfil = () => {
     try {
       setLoading(true);
       const userResponse = await userAPI.getProfile();
-      setUser(userResponse.data);
-      const reservationsResponse = await userAPI.getUserReservations(userResponse.data.id);
+      let profile = userResponse?.data || {};
+
+      // Enriquecer con usuario guardado en localStorage (puede incluir 'phone')
+      try {
+        const lsUserRaw = localStorage.getItem('user');
+        const lsUser = lsUserRaw ? JSON.parse(lsUserRaw) : {};
+        profile = { ...lsUser, ...profile };
+      } catch (_) {}
+
+      // Si falta el teléfono en el perfil de Auth, intenta obtenerlo desde el grupo General
+      if (!profile.phone && profile.id) {
+        try {
+          const generalRes = await userAPI.getUser(profile.id);
+          if (generalRes?.data?.phone) {
+            profile.phone = generalRes.data.phone;
+          }
+        } catch (e) {
+          // Silenciar: puede no existir el endpoint o no devolver 'phone'
+          console.debug('No se pudo enriquecer teléfono desde /user:', e);
+        }
+      }
+
+      setUser(profile);
+      // NUEVO: precargar formulario de edición
+      setEditForm({ name: profile.name || '', phone: profile.phone || '' });
+
+      const reservationsResponse = await userAPI.getUserReservations(profile.id);
       setReservations(reservationsResponse.data);
     } catch (err) {
       const errorInfo = handleAPIError(err);
@@ -40,6 +71,50 @@ const Perfil = () => {
       ]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // NUEVO: manejadores de edición
+  const startEdit = () => {
+    setEditForm({ name: user?.name || '', phone: user?.phone || '' });
+    setIsEditing(true);
+    setSaveError('');
+    setSaveSuccess('');
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setSaveError('');
+    setSaveSuccess('');
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const saveEdit = async (e) => {
+    e?.preventDefault?.();
+    if (!user?.id) return;
+    setSaving(true);
+    setSaveError('');
+    setSaveSuccess('');
+    try {
+      await userAPI.updateUser(user.id, { name: editForm.name, phone: editForm.phone, email: user.email });
+      const updated = { ...user, name: editForm.name, phone: editForm.phone };
+      setUser(updated);
+      try {
+        const raw = localStorage.getItem('user');
+        const current = raw ? JSON.parse(raw) : {};
+        localStorage.setItem('user', JSON.stringify({ ...current, name: updated.name, phone: updated.phone }));
+      } catch (_) {}
+      setSaveSuccess('Datos actualizados.');
+      setIsEditing(false);
+    } catch (err) {
+      const info = handleAPIError(err);
+      setSaveError(info.message || 'No se pudo actualizar.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -187,11 +262,28 @@ const Perfil = () => {
           {activeTab === 'profile' && (
             <div className="card shadow-sm">
               <div className="card-body">
-                <h3 className="h5 fw-bold mb-4">Información Personal</h3>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h3 className="h5 fw-bold mb-0">Información Personal</h3>
+                  {isEditing ? (
+                    <div>
+                      <button className="btn btn-sm btn-outline-secondary me-2" onClick={cancelEdit} disabled={saving}>Cancelar</button>
+                      <button className="btn btn-sm btn-primary" onClick={saveEdit} disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+                    </div>
+                  ) : (
+                    <button className="btn btn-sm btn-outline-primary" onClick={startEdit}>Editar</button>
+                  )}
+                </div>
+                {saveError && <div className="alert alert-warning mb-3">{saveError}</div>}
+                {saveSuccess && <div className="alert alert-success mb-3">{saveSuccess}</div>}
                 <div className="row g-3">
                   <div className="col-12 col-md-6">
                     <small className="text-muted d-block">Nombre</small>
-                    <div className="fw-medium">{user.name}</div>
+                    {/* Mostrar input en modo edición */}
+                    {isEditing ? (
+                      <input name="name" value={editForm.name} onChange={handleEditChange} className="form-control" placeholder="Tu nombre" />
+                    ) : (
+                      <div className="fw-medium">{user.name}</div>
+                    )}
                   </div>
                   <div className="col-12 col-md-6">
                     <small className="text-muted d-block">Correo</small>
@@ -199,7 +291,11 @@ const Perfil = () => {
                   </div>
                   <div className="col-12 col-md-6">
                     <small className="text-muted d-block">Teléfono</small>
-                    <div className="fw-medium">{user.phone}</div>
+                    {isEditing ? (
+                      <input name="phone" value={editForm.phone} onChange={handleEditChange} className="form-control" placeholder="+56 9 ..." />
+                    ) : (
+                      <div className="fw-medium">{user.phone || '—'}</div>
+                    )}
                   </div>
                   {/* Dirección removida porque la base de datos no la almacena */}
                   <div className="col-12">

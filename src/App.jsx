@@ -12,6 +12,9 @@ import Blog from './pages/Blog';
 import Nosotros from './pages/Nosotros';
 import Carrito from './pages/Carrito';
 import AdminServicios from './pages/AdminServicios';
+import AdminUsuarios from './pages/AdminUsuarios';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminPagosAgenda from './pages/AdminPagosAgenda';
 import './App.css';
 
 function App() {
@@ -33,7 +36,10 @@ function App() {
             <Route path="/login" element={<LoginRegister />} />
             <Route path="/register" element={<LoginRegister />} />
             <Route path="/carrito" element={<Carrito />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/servicios" element={<AdminServicios />} />
+            <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+            <Route path="/admin/pagos-agenda" element={<AdminPagosAgenda />} />
             {/* Ruta catch-all para páginas no encontradas */}
             <Route path="*" element={<Home />} />
           </Routes>

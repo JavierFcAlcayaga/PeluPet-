@@ -2,6 +2,101 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { serviceAPI, handleAPIError } from '../utils/api';
 
+// Componente de tarjeta con carrusel simple controlado por estado
+const ServiceCard = ({ service, buildImageSrc, usingExample }) => {
+  // Normaliza arreglo de imágenes incluso si viene como string JSON o URL simple
+  let images = [];
+  if (Array.isArray(service.images) && service.images.length > 0) {
+    images = service.images;
+  } else if (typeof service.images === 'string' && service.images.trim()) {
+    try {
+      const parsed = JSON.parse(service.images);
+      if (Array.isArray(parsed) && parsed.length > 0) images = parsed;
+      else images = [service.images];
+    } catch {
+      images = [service.images];
+    }
+  } else if (service.image) {
+    images = [service.image];
+  } else {
+    images = ['/img/CorteBanio.jpeg'];
+  }
+  const [idx, setIdx] = useState(0);
+  const next = () => setIdx((i) => (i + 1) % images.length);
+  const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
+
+  return (
+    <div className={`card h-100 shadow-sm ${service.isSpecial ? 'border-warning' : ''}`}>
+      {service.isSpecial && (
+        <div className="card-header bg-warning text-white text-center">
+          <small className="fw-bold">¡OFERTA ESPECIAL!</small>
+        </div>
+      )}
+      <div className="position-relative">
+        <img
+          src={buildImageSrc(images[idx])}
+          className={`card-img-top ${service.isSpecial ? 'rounded-0' : ''}`}
+          alt={service.name}
+          style={{ objectFit: 'cover', height: 180 }}
+        />
+        {images.length > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Anterior"
+              className="btn btn-light btn-sm position-absolute top-50 start-0 translate-middle-y ms-2"
+              onClick={prev}
+            >
+              <i className="bi bi-chevron-left"></i>
+            </button>
+            <button
+              type="button"
+              aria-label="Siguiente"
+              className="btn btn-light btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+              onClick={next}
+            >
+              <i className="bi bi-chevron-right"></i>
+            </button>
+            <div className="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1">
+              {images.map((_, i) => (
+                <span
+                  key={i}
+                  role="button"
+                  onClick={() => setIdx(i)}
+                  className={`badge rounded-pill ${i === idx ? 'bg-primary' : 'bg-light text-dark'}`}
+                >
+                  {i + 1}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <div className="card-body d-flex flex-column">
+        <h5 className="card-title">{service.name}</h5>
+        <div className="mt-auto">
+          <p className="fw-bold text-primary fs-5 mb-3">
+            {new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 }).format(service.price || 0)}
+          </p>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <small className="text-muted">
+              <i className="bi bi-clock me-1"></i>
+              {service.estimated_duration || service.duration || 60} min
+            </small>
+          </div>
+          {!usingExample && (
+            <div className="d-grid">
+              <Link to={`/servicios/${service.id}`} className="btn btn-outline-primary">
+                Ver Detalle
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Servicios = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +111,7 @@ const Servicios = () => {
       description: 'Servicio integral que incluye baño, secado, corte de pelo y limpieza de oídos.',
       price: 25000,
       duration: 90,
-      image: '/img/CorteBanio.jpeg'
+      images: ['/img/CorteBanio.jpeg']
     },
     {
       id: 2,
@@ -24,7 +119,7 @@ const Servicios = () => {
       description: 'Servicio profesional de corte de uñas para mantener la salud de las patas.',
       price: 8000,
       duration: 30,
-      image: '/img/Garras.jpeg'
+      images: ['/img/Garras.jpeg']
     },
     {
       id: 3,
@@ -32,7 +127,7 @@ const Servicios = () => {
       description: 'Tratamiento premium con masajes, aromaterapia e hidratación del pelaje.',
       price: 45000,
       duration: 120,
-      image: '/img/Spa.jpeg'
+      images: ['/img/Spa.jpeg']
     },
     {
       id: 4,
@@ -40,7 +135,7 @@ const Servicios = () => {
       description: 'Limpieza profesional de dientes para mantener la salud bucal de tu mascota.',
       price: 15000,
       duration: 45,
-      image: '/img/Limpieza dental.jpeg'
+      images: ['/img/Limpieza dental.jpeg']
     },
     {
       id: 5,
@@ -48,7 +143,7 @@ const Servicios = () => {
       description: 'Tratamiento especializado para perros con pelo enredado o muy largo.',
       price: 20000,
       duration: 60,
-      image: '/img/Enrredado.jpeg'
+      images: ['/img/Enrredado.jpeg']
     },
     {
       id: 6,
@@ -56,7 +151,7 @@ const Servicios = () => {
       description: 'Tratamiento completo para eliminar y prevenir pulgas y otros parásitos.',
       price: 18000,
       duration: 45,
-      image: '/img/Antipulgas.jpeg'
+      images: ['/img/Antipulgas.jpeg']
     },
     {
       id: 7,
@@ -64,7 +159,7 @@ const Servicios = () => {
       description: 'Corte personalizado según la raza y preferencias del dueño.',
       price: 30000,
       duration: 75,
-      image: '/img/Punk.jpeg'
+      images: ['/img/Punk.jpeg']
     },
     {
       id: 8,
@@ -72,13 +167,14 @@ const Servicios = () => {
       description: 'Todos nuestros servicios incluidos: baño, corte, uñas, limpieza dental y más.',
       price: 65000,
       duration: 180,
-      image: '/img/Perrito full.jpeg',
+      images: ['/img/Perrito full.jpeg'],
       isSpecial: true
     }
   ];
 
-  // Construye la URL de imagen desde recurso de Xano o cadena
+  // Construye la URL de imagen desde recurso de Xano o cadena; soporta arreglo
   const buildImageSrc = (image) => {
+    if (Array.isArray(image)) image = image[0];
     if (!image) return '/img/CorteBanio.jpeg';
     if (typeof image === 'string') return image;
     const directUrl = image.url || image.full_url || image.download_url || image.link || null;
@@ -113,6 +209,8 @@ const Servicios = () => {
               price: item.price ?? 0,
               duration: item.estimated_duration ?? item.duration ?? 60,
               image: item.image ?? null,
+              // Conservar 'images' aunque sea string JSON o URL simple
+              images: item.images ?? (item.image ? [item.image] : []),
             }))
           : [];
 
@@ -137,20 +235,6 @@ const Servicios = () => {
 
     fetchServices();
   }, []);
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
-
-  const truncateText = (text, max = 90) => {
-    if (!text) return '';
-    if (text.length <= max) return text;
-    return text.slice(0, max).trim() + '…';
-  };
 
   if (loading) {
     return (
@@ -191,39 +275,7 @@ const Servicios = () => {
         <div className="row">
           {services.map((service) => (
             <div key={service.id} className="col-12 col-sm-6 col-md-6 col-lg-3 mb-4">
-              <div className={`card h-100 shadow-sm ${service.isSpecial ? 'border-warning' : ''}`}>
-                {service.isSpecial && (
-                  <div className="card-header bg-warning text-white text-center">
-                    <small className="fw-bold">¡OFERTA ESPECIAL!</small>
-                  </div>
-                )}
-                <img 
-                  src={buildImageSrc(service.image)} 
-                  className={`card-img-top ${service.isSpecial ? 'rounded-0' : ''}`}
-                  alt={service.name}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{service.name}</h5>
-                  <div className="mt-auto">
-                    <p className="fw-bold text-primary fs-5 mb-3">
-                      {formatPrice(service.price)}
-                    </p>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <small className="text-muted">
-                        <i className="bi bi-clock me-1"></i>
-                        {service.duration} min
-                      </small>
-                    </div>
-                    {!usingExample && (
-                      <div className="d-grid">
-                        <Link to={`/servicios/${service.id}`} className="btn btn-outline-primary">
-                          Ver Detalle
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <ServiceCard service={service} buildImageSrc={buildImageSrc} usingExample={usingExample} />
             </div>
           ))}
         </div>
@@ -250,34 +302,13 @@ const Servicios = () => {
             <div className="card border-0 bg-light h-100">
               <div className="card-body">
                 <h5 className="card-title">
-                  <i className="bi bi-info-circle text-primary me-2"></i>
-                  Políticas de Servicio
+                  <i className="bi bi-shield-check text-primary me-2"></i>
+                  Compromiso de Calidad
                 </h5>
-                <ul className="list-unstyled mb-0">
-                  <li>• Reserva con 24 horas de anticipación</li>
-                  <li>• Vacunas al día requeridas</li>
-                  <li>• Cancelación gratuita hasta 2 horas antes</li>
-                  <li>• Productos premium incluidos</li>
-                </ul>
+                <p className="mb-0">
+                  Nuestro equipo está compuesto por profesionales con amplia experiencia y formación continua para garantizar el mejor cuidado para tu mascota.
+                </p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center mt-5">
-          <div className="bg-primary text-white rounded p-5">
-            <h3 className="mb-3">¿Necesitas más información?</h3>
-            <p className="lead mb-4">
-              Nuestro equipo está listo para ayudarte a elegir el mejor servicio para tu mascota
-            </p>
-            <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-              <button className="btn btn-light btn-lg">
-                <i className="bi bi-telephone me-2"></i>Llamar Ahora
-              </button>
-              <button className="btn btn-outline-light btn-lg">
-                <i className="bi bi-whatsapp me-2"></i>WhatsApp
-              </button>
             </div>
           </div>
         </div>

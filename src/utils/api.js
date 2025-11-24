@@ -4,10 +4,10 @@ import axios from 'axios';
 const IS_DEV = import.meta.env.DEV;
 const API_BASE_URL_GENERAL = IS_DEV
   ? '/xano-general'
-  : import.meta.env.VITE_XANO_BASE_URL_GENERAL || 'https://x8ki-letl-twmt.n7.xano.io/api:YQMhoR_R';
+  : import.meta.env.VITE_XANO_BASE_URL_GENERAL || import.meta.env.VITE_XANO_BASE_URL || 'https://x8ki-letl-twmt.n7.xano.io/api:YQMhoR_R';
 const API_BASE_URL_AUTH = IS_DEV
   ? '/xano-auth'
-  : import.meta.env.VITE_XANO_BASE_URL_AUTH || 'https://x8ki-letl-twmt.n7.xano.io/api:PUy33CMp';
+  : import.meta.env.VITE_XANO_BASE_URL_AUTH || import.meta.env.VITE_XANO_BASE_URL || API_BASE_URL_GENERAL;
 
 // Crear instancias de axios separadas
 const apiGeneral = axios.create({
@@ -57,12 +57,22 @@ export const authAPI = {
 
 // Funciones para usuarios
 export const userAPI = {
-  // En Xano, el perfil actual se obtiene vía auth: /auth/me
+  // Perfil actual
   getProfile: () => apiAuth.get('/auth/me'),
-  // Si tienes un endpoint de actualización de perfil, ajústalo aquí
   updateProfile: (userData) => apiGeneral.put('/user/profile', userData),
-  // Filtrar reservas por usuario (asume campo user_id). Ajusta si difiere.
   getUserReservations: (userId) => apiGeneral.get('/reservation', { params: { user_id: userId } }),
+
+  // Administración de usuarios (requiere rol admin en backend)
+  // CRUD en grupo General y creación en Auth, según tu configuración actual
+  getAllUsers: (params = {}) => apiGeneral.get('/user', { params }),
+  getUser: (id) => apiGeneral.get(`/user/${id}`),
+  // Crear usuario por el flujo de signup del grupo Auth
+  createUser: (data) => apiAuth.post('/auth/signup', data),
+  updateUser: (id, data) => apiGeneral.put(`/user/${id}`, data),
+  deleteUser: (id) => apiGeneral.delete(`/user/${id}`),
+  // Ajuste: Xano usa campo 'status' (true=activo, false=inactivo)
+  blockUser: (id) => apiGeneral.put(`/user/${id}`, { status: false }),
+  unblockUser: (id) => apiGeneral.put(`/user/${id}`, { status: true }),
 };
 
 // Funciones para mascotas
@@ -172,6 +182,23 @@ export const staffAPI = {
   createStaff: (data) => apiGeneral.post('/staff', data),
   updateStaff: (id, data) => apiGeneral.patch(`/staff/${id}`, data),
   deleteStaff: (id) => apiGeneral.delete(`/staff/${id}`),
+};
+
+// NUEVO: subida múltiple de imágenes
+export const uploadAPI = {
+  // Compatibilidad existente: subir bajo campo 'images'
+  uploadImages: (files, extra = {}) => {
+    const fd = new FormData();
+    Array.from(files || []).forEach((file) => fd.append('images', file));
+    Object.entries(extra || {}).forEach(([k, v]) => fd.append(k, String(v)));
+    return apiGeneral.post('/upload/image', fd);
+  },
+  // Alineado al endpoint de Xano: subir bajo campo 'content[]' y sin JSON
+  uploadImagesContent: (files) => {
+    const fd = new FormData();
+    Array.from(files || []).forEach((file) => fd.append('content[]', file));
+    return apiGeneral.post('/upload/image', fd);
+  },
 };
 
 // Función helper para manejar errores

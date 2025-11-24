@@ -8,8 +8,10 @@ const ServicioDetalle = () => {
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [idx, setIdx] = useState(0);
 
   const buildImageSrc = (image) => {
+    if (Array.isArray(image)) image = image[0];
     if (!image) return '/img/CorteBanio.jpeg';
     if (typeof image === 'string') return image;
     const directUrl = image.url || image.full_url || image.download_url || image.link || null;
@@ -45,9 +47,11 @@ const ServicioDetalle = () => {
             price: item.price ?? 0,
             duration: item.estimated_duration ?? item.duration ?? 60,
             image: item.image ?? null,
+            images: Array.isArray(item.images) ? item.images : (item.image ? [item.image] : []),
           };
           setService(normalized);
           setError('');
+          setIdx(0);
         }
       } catch (err) {
         const info = handleAPIError(err);
@@ -82,12 +86,54 @@ const ServicioDetalle = () => {
     );
   }
 
+  let images;
+  if (Array.isArray(service.images) && service.images.length > 0) {
+    images = service.images;
+  } else if (typeof service.images === 'string' && service.images.trim()) {
+    try {
+      const parsed = JSON.parse(service.images);
+      images = Array.isArray(parsed) && parsed.length > 0 ? parsed : [service.images];
+    } catch {
+      images = [service.images];
+    }
+  } else {
+    images = service.image ? [service.image] : ['/img/CorteBanio.jpeg'];
+  }
+  const next = () => setIdx((i) => (i + 1) % images.length);
+  const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
+
   return (
     <main>
       <div className="container py-5">
         <div className="row g-4">
           <div className="col-lg-6">
-            <img src={buildImageSrc(service.image)} alt={service.name} className="img-fluid rounded shadow" />
+            <div className="position-relative">
+              <img src={buildImageSrc(images[idx])} alt={service.name} className="img-fluid rounded shadow" />
+              {images.length > 1 && (
+                <>
+                  <button type="button" aria-label="Anterior" className="btn btn-light btn-sm position-absolute top-50 start-0 translate-middle-y" onClick={prev}>
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+                  <button type="button" aria-label="Siguiente" className="btn btn-light btn-sm position-absolute top-50 end-0 translate-middle-y" onClick={next}>
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
+                </>
+              )}
+            </div>
+            {images.length > 1 && (
+              <div className="d-flex gap-2 mt-3 flex-wrap">
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={buildImageSrc(img)}
+                    alt={`Miniatura ${i + 1}`}
+                    style={{ width: 72, height: 72, objectFit: 'cover', cursor: 'pointer' }}
+                    className={`rounded ${i === idx ? 'border border-2 border-primary' : 'border'}`}
+                    onClick={() => setIdx(i)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <div className="col-lg-6">
             <h1 className="h3 fw-bold mb-3">{service.name}</h1>
@@ -100,17 +146,9 @@ const ServicioDetalle = () => {
               {service.duration} min
             </p>
             <div className="d-flex gap-3">
-              <button className="btn btn-primary" onClick={() => {
-                cart.addItem({
-                  id: service.id,
-                  name: service.name,
-                  price: service.price,
-                  duration: service.duration,
-                  image: buildImageSrc(service.image),
-                }, 1);
-              }}>
-                Agregar al carrito
-              </button>
+              <Link to={`/reservas?serviceId=${service.id}`} className="btn btn-primary">
+                Reservar cita
+              </Link>
               <Link to="/servicios" className="btn btn-outline-primary">Volver</Link>
             </div>
           </div>

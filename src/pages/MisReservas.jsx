@@ -27,6 +27,17 @@ const MisReservas = () => {
     }
   };
 
+  // Helper para extraer imagen de servicio en distintos formatos
+  const extractServiceImage = (svc) => {
+    if (!svc) return null;
+    const img = svc.image
+      || (Array.isArray(svc.images) ? svc.images[0] : null)
+      || svc.photo
+      || svc.picture
+      || null;
+    return img || null;
+  };
+
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -39,7 +50,7 @@ const MisReservas = () => {
         }
         const res = await reservationAPI.getUserReservations(user.id);
         const data = res?.data;
-        const base = Array.isArray(data) ? data.map((item) => ({
+        const baseRaw = Array.isArray(data) ? data.map((item) => ({
           id: item.id ?? item.reservation_id ?? Math.random(),
           date: item.date ?? item.reservation_date ?? null,
           time: item.time ?? item.reservation_time ?? null,
@@ -58,17 +69,27 @@ const MisReservas = () => {
           petAge: (item.pet?.age) || item.pet_age || '',
         })) : [];
 
+        // Deduplicar por id de reserva (Xano puede devolver filas por join)
+        const byId = new Map();
+        baseRaw.forEach((r) => {
+          const key = String(r.id);
+          const prev = byId.get(key) || {};
+          byId.set(key, { ...prev, ...r });
+        });
+        let enriched = Array.from(byId.values());
+
         // Enlazar servicios a reservas
-        let enriched = base;
         try {
           const linkRes = await reservationServiceAPI.getAllReservationServices();
           const links = Array.isArray(linkRes?.data) ? linkRes.data : [];
+          const reservationIdsSet = new Set(enriched.map((r) => String(r.id)));
           const byReservation = new Map();
           links.forEach((ln) => {
             const rid = ln.reservation_id || ln.reservation?.id;
             const sid = ln.service_id || ln.service?.id;
             const key = (rid !== undefined && rid !== null) ? String(rid) : null;
-            if (key && sid && !byReservation.has(key)) {
+            if (!key || !reservationIdsSet.has(key)) return; // solo las del usuario
+            if (sid && !byReservation.has(key)) {
               byReservation.set(key, {
                 id: sid,
                 name: ln.service?.name || null,
@@ -95,7 +116,7 @@ const MisReservas = () => {
             const linkInfo = byReservation.get(String(r.id)) || null;
             const sid = r.serviceId || linkInfo?.id || null;
             const s = sid ? serviceMap.get(sid) : null;
-            const image = s?.image ?? linkInfo?.image ?? null;
+            const image = extractServiceImage(s) ?? linkInfo?.image ?? null;
             const price = (s?.price ?? linkInfo?.price ?? r.price);
             const duration = (s?.estimated_duration ?? s?.duration ?? linkInfo?.duration ?? r.duration);
             return {
@@ -150,6 +171,50 @@ const MisReservas = () => {
           });
         } catch {}
 
+        // Fallback local: pista almacenada al crear la reserva
+        try {
+          enriched = enriched.map((r) => {
+            if ((r.petId && r.petName) || r.petName) return r;
+            const hintRaw = localStorage.getItem(`reservation_pet_hint_${r.id}`);
+            if (!hintRaw) return r;
+            try {
+              const hint = JSON.parse(hintRaw);
+              return {
+                ...r,
+                petId: r.petId || hint.petId || null,
+                petName: r.petName || hint.petName || '',
+                petBreed: r.petBreed || hint.petBreed || '',
+                petAge: r.petAge || hint.petAge || '',
+              };
+            } catch {
+              return r;
+            }
+          });
+        } catch {}
+
+        // Fallback: si el usuario tiene una sola mascota, usarla para mostrar datos
+        try {
+          const petsRes = await petAPI.getAllPets();
+          const allPets = Array.isArray(petsRes?.data) ? petsRes.data : [];
+          const currentUser = getCurrentUser();
+          const userPets = allPets.filter((p) => (
+            (p.user_id === currentUser?.id) || (p.owner_id === currentUser?.id) || (p.user?.id === currentUser?.id)
+          ));
+          if (userPets.length === 1) {
+            const onlyPet = userPets[0];
+            enriched = enriched.map((r) => {
+              if (r.petName || r.petBreed || r.petAge) return r;
+              return {
+                ...r,
+                petName: onlyPet?.name || r.petName || '',
+                petBreed: onlyPet?.breed || r.petBreed || '',
+                petAge: onlyPet?.age || r.petAge || '',
+              };
+            });
+          }
+        } catch {}
+
+
         setReservations(enriched);
         setError('');
       } catch (err) {
@@ -166,6 +231,7 @@ const MisReservas = () => {
   const buildImageSrc = (image) => {
     if (!image) return '/img/CorteBanio.jpeg';
     if (typeof image === 'string') return image;
+    if (Array.isArray(image)) return buildImageSrc(image[0]);
     const directUrl = image?.url || image?.full_url || image?.download_url || image?.link || null;
     if (directUrl) return directUrl;
     const path = image?.path
@@ -233,7 +299,13 @@ const MisReservas = () => {
                   <img src={buildImageSrc(r.serviceImage)} alt={r.serviceName || 'Servicio'} className="card-img-top" />
                   <div className="card-body d-flex flex-column">
                     <div className="d-flex align-items-center mb-2">
-                      <span className="badge bg-primary text-capitalize">{r.status}</span>
+                      {(() => {
+                        const v = (r.status || '').toLowerCase();
+                        const isRejected = v === 'rechazada' || v === 'rechazado';
+                        const label = isRejected ? 'Rechazada' : 'Aceptada';
+                        const cls = isRejected ? 'bg-danger' : 'bg-success';
+                        return (<span className={`badge ${cls}`}>{label}</span>);
+                      })()}
                     </div>
                     <h5 className="card-title mb-2">{r.serviceName || 'Reserva de servicio'}</h5>
                     <p className="card-text mb-2">
@@ -245,14 +317,7 @@ const MisReservas = () => {
                         <small className="text-muted">Cliente</small>
                         <div>{r.ownerName || '—'}{r.ownerEmail ? ` · ${r.ownerEmail}` : ''}{r.ownerPhone ? ` · ${r.ownerPhone}` : ''}</div>
                       </div>
-                      <div className="col-12">
-                        <small className="text-muted">Mascota</small>
-                        <div>
-                          {r.petName || '—'}
-                          {r.petBreed ? ` · ${r.petBreed}` : ''}
-                          {r.petAge ? ` · ${r.petAge}` : ''}
-                        </div>
-                      </div>
+
                     </div>
                     {r.notes && (
                       <p className="text-muted">{r.notes}</p>
