@@ -71,12 +71,18 @@ const Carrito = () => {
             time: item.appointmentTime,
             notes: item.appointmentNotes || '',
             pet_id: petId || undefined,
+            status: 'aceptada',
+            // Datos del cliente para facilitar visualización en admin
+            owner_name: currentUser.name || item.ownerName || '',
+            owner_email: currentUser.email || item.ownerEmail || '',
+            owner_phone: currentUser.phone || item.ownerPhone || '',
+            user_name: currentUser.name || '',
+            user_email: currentUser.email || '',
+            user_phone: currentUser.phone || '',
           });
           const reservation = reservationRes?.data;
 
-          if (reservation?.id) {
-            try { await reservationAPI.updateReservation(reservation.id, { status: 'aceptada' }); } catch {}
-          }
+          
 
           if (reservation?.id && item.id) {
             try {

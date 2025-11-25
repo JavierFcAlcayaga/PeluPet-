@@ -14,6 +14,8 @@ const AdminPagosAgenda = () => {
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
   const [pets, setPets] = useState([]);
+  const [resolvedUserNames, setResolvedUserNames] = useState(new Map());
+  const [resolvedPetNames, setResolvedPetNames] = useState(new Map());
 
   // Protección básica: solo admin
   useEffect(() => {
@@ -65,7 +67,10 @@ const AdminPagosAgenda = () => {
 
   const usersMap = useMemo(() => {
     const m = new Map();
-    users.forEach(u => m.set(u.id, u));
+    users.forEach(u => {
+      m.set(u.id, u);
+      m.set(String(u.id), u);
+    });
     return m;
   }, [users]);
 
@@ -75,14 +80,98 @@ const AdminPagosAgenda = () => {
     return m;
   }, [pets]);
 
+  // Fallback: resolver nombres puntualmente por ID cuando no vienen en listas
+  useEffect(() => {
+    const pendingUserIds = new Set();
+    const pendingPetIds = new Set();
+
+    reservations.forEach((r) => {
+      const uidRaw = r.user_id ?? r.user ?? r.owner_id ?? r.customer_id ?? r.userId ?? r.userID ?? null;
+      const uid = (uidRaw && typeof uidRaw === 'object' ? uidRaw.id : uidRaw);
+      if (uid != null && !usersMap.get(uid) && !usersMap.get(String(uid)) && !resolvedUserNames.has(String(uid))) {
+        pendingUserIds.add(uid);
+      }
+
+      const pidRaw = r.pet_id ?? r.pet ?? null;
+      const pid = (pidRaw && typeof pidRaw === 'object' ? pidRaw.id : pidRaw);
+      if (pid != null && !petsMap.get(pid) && !resolvedPetNames.has(String(pid))) {
+        pendingPetIds.add(pid);
+      }
+    });
+
+    if (pendingUserIds.size === 0 && pendingPetIds.size === 0) return;
+
+    (async () => {
+      try {
+        await Promise.all(Array.from(pendingUserIds).map(async (id) => {
+          try {
+            const res = await userAPI.getUser(id);
+            const u = res?.data || {};
+            const name = u.name || u.full_name || u.email || `Usuario #${id}`;
+            setResolvedUserNames((prev) => {
+              const next = new Map(prev);
+              next.set(String(id), name);
+              return next;
+            });
+          } catch {
+            setResolvedUserNames((prev) => {
+              const next = new Map(prev);
+              next.set(String(id), `Usuario #${id}`);
+              return next;
+            });
+          }
+        }));
+
+        await Promise.all(Array.from(pendingPetIds).map(async (id) => {
+          try {
+            const res = await petAPI.getPet(id);
+            const p = res?.data || {};
+            const name = p.name || `Mascota #${id}`;
+            setResolvedPetNames((prev) => {
+              const next = new Map(prev);
+              next.set(String(id), name);
+              return next;
+            });
+          } catch {
+            setResolvedPetNames((prev) => {
+              const next = new Map(prev);
+              next.set(String(id), `Mascota #${id}`);
+              return next;
+            });
+          }
+        }));
+      } catch (e) {
+        // silencioso: cualquier error aquí no bloquea la UI
+      }
+    })();
+  }, [reservations, usersMap, petsMap, resolvedUserNames, resolvedPetNames]);
+
   // Construir filas visibles
   const rows = useMemo(() => {
     return reservations.map(r => {
       const rLinks = links.filter(l => l.reservation_id === r.id);
       const names = rLinks.map(l => servicesMap.get(l.service_id)?.name || `Servicio #${l.service_id}`);
       const total = rLinks.reduce((sum, l) => sum + (Number(servicesMap.get(l.service_id)?.price) || 0), 0);
-      const cliente = usersMap.get(r.user_id)?.name || `Usuario #${r.user_id}`;
-      const mascota = r.pet_id ? (petsMap.get(r.pet_id)?.name || `Mascota #${r.pet_id}`) : '—';
+
+      // Detectar id de usuario desde múltiples variantes, incluyendo campo relación numérico 'user'
+      const uidRaw = r.user_id ?? r.user ?? r.owner_id ?? r.customer_id ?? r.userId ?? r.userID ?? null;
+      const uid = (uidRaw && typeof uidRaw === 'object' ? uidRaw.id : uidRaw);
+      const userObj = (uid != null ? (usersMap.get(uid) || usersMap.get(String(uid))) : null) || r.user || r.owner || r.customer || null;
+      const clienteOverride = uid ? (resolvedUserNames.get(String(uid)) || null) : null;
+      const cliente = (
+        clienteOverride ||
+        (userObj && typeof userObj === 'object' ? (userObj.name || userObj.full_name || userObj.email) : null) ||
+        r.owner_name || r.user_name || r.client_name || r.customer_name || r.name ||
+        r.user_email || r.owner_email || r.email ||
+        (uid ? `Usuario #${uid}` : '—')
+      );
+
+      // Detectar id de mascota desde múltiples variantes, incluyendo relación numérica 'pet'
+      const pidRaw = r.pet_id ?? r.pet ?? null;
+      const pid = (pidRaw && typeof pidRaw === 'object' ? pidRaw.id : pidRaw);
+      const mascotaOverride = pid ? (resolvedPetNames.get(String(pid)) || null) : null;
+      const mascota = mascotaOverride || r.pet_name || (pid ? (petsMap.get(pid)?.name || '—') : '—');
+
       return {
         id: r.id,
         cliente,
@@ -94,11 +183,13 @@ const AdminPagosAgenda = () => {
         raw: r,
       };
     });
-  }, [reservations, links, servicesMap, usersMap, petsMap]);
+  }, [reservations, links, servicesMap, usersMap, petsMap, resolvedUserNames, resolvedPetNames]);
 
   const visibles = useMemo(() => {
-    return soloPendientes ? rows.filter(it => (it.estado || '').toLowerCase() === 'agendado') : rows;
-  }, [rows, soloPendientes]);
+     return soloPendientes
+       ? rows.filter(it => ['aceptada','aceptado'].includes((it.estado || '').toLowerCase()))
+       : rows;
+   }, [rows, soloPendientes]);
 
   // Acciones admin
   const actualizarEstado = async (reservationId, nuevoEstado) => {
@@ -112,16 +203,23 @@ const AdminPagosAgenda = () => {
     }
   };
 
-  const aceptarReserva = (id) => actualizarEstado(id, 'aceptado');
-  const rechazarReserva = (id) => actualizarEstado(id, 'rechazado');
+  const aceptarReserva = (id) => actualizarEstado(id, 'aceptada');
+  const rechazarReserva = (id) => actualizarEstado(id, 'rechazada');
 
   const badgeFor = (estado) => {
     const e = (estado || '').toLowerCase();
     switch (e) {
-      case 'agendado': return <span className="badge bg-warning text-dark">Agendado</span>;
-      case 'aceptado': return <span className="badge bg-success">Aceptado</span>;
-      case 'rechazado': return <span className="badge bg-danger">Rechazado</span>;
-      default: return <span className="badge bg-secondary">{estado}</span>;
+      case 'agendado':
+      case 'pendiente':
+        return <span className="badge bg-warning text-dark">Agendado</span>;
+      case 'aceptado':
+      case 'aceptada':
+        return <span className="badge bg-success">Aceptada</span>;
+      case 'rechazado':
+      case 'rechazada':
+        return <span className="badge bg-danger">Rechazada</span>;
+      default:
+        return <span className="badge bg-secondary">{estado}</span>;
     }
   };
 
@@ -141,7 +239,7 @@ const AdminPagosAgenda = () => {
             onChange={(e) => setSoloPendientes(e.target.checked)}
           />
           <label className="form-check-label" htmlFor="soloPendientes">
-            Ver solo agendadas
+            Ver solo confirmadas
           </label>
         </div>
       </header>
@@ -211,17 +309,15 @@ const AdminPagosAgenda = () => {
                       <td>
                         <div className="d-flex gap-2">
                           <button
-                            className="btn btn-success btn-sm"
+                            className="btn btn-warning btn-sm"
                             onClick={() => aceptarReserva(it.id)}
-                            disabled={(it.estado || '').toLowerCase() !== 'agendado'}
-                            title="Aceptar y confirmar"
+                            title="Confirmar reserva"
                           >
-                            Aceptar
+                            Confirmar
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() => rechazarReserva(it.id)}
-                            disabled={(it.estado || '').toLowerCase() !== 'agendado'}
                             title="Rechazar cita"
                           >
                             Rechazar
