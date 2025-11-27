@@ -315,21 +315,18 @@ const LoginRegister = () => {
                   </div>
                 </form>
 
-                {/* Información de credenciales de prueba (solo en login) */}
-                {isLogin && (
-                  <div className="mt-4 p-3 bg-light rounded">
-                    <h6 className="fw-bold text-muted mb-2">Credenciales de Prueba:</h6>
-                    <p className="small text-muted mb-1">
-                      <strong>Administrador:</strong><br />
-                      Email: admin@pelupet.cl<br />
-                      Contraseña: admin123
-                    </p>
-                    <p className="small text-muted mb-0">
-                      <strong>Cliente:</strong><br />
-                      Cualquier otro email y contraseña
-                    </p>
-                  </div>
-                )}
+                 {isLogin && (
+                   <div className="mt-4 p-3 bg-light rounded">
+                     <h6 className="fw-bold text-muted mb-2">Credenciales de Prueba:</h6>
+                     <p className="small text-muted mb-1">
+                       Email: javier@gmail.com<br />
+                       Contraseña: javier123
+                     </p>
+                     <p className="small text-muted mb-0">
+                       Usa estas credenciales para probar el inicio de sesión.
+                     </p>
+                   </div>
+                 )}
               </div>
             </div>
           </div>
